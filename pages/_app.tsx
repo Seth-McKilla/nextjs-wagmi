@@ -38,7 +38,7 @@ const connectors = ({ chainId }: { chainId?: number }): Connector[] => {
 export default function MyApp({ Component, pageProps }: AppProps) {
   return (
     <Provider autoConnect connectors={connectors}>
-      <Component {...pageProps} />;
+      <Component {...pageProps} />
     </Provider>
   );
 }

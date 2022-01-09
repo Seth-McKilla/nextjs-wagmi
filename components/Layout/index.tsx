@@ -1,6 +1,6 @@
 import Head from "next/head";
 import { ReactNode, useState } from "react";
-import { WalletOptionsModal } from "..";
+import { Button, WalletOptionsModal } from "..";
 
 export default function Layout({ children }: { children: ReactNode }) {
   const [showWalletOptions, setShowWalletOptions] = useState(false);
@@ -18,7 +18,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         setOpen={setShowWalletOptions}
       />
 
-      <div className="bg-gradient-to-r from-blue-200 to-blue-100">
+      <div className="bg-gradient-to-r from-blue-200 to-blue-100 absolute w-screen">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center">
             <a
@@ -28,15 +28,10 @@ export default function Layout({ children }: { children: ReactNode }) {
               NextJS wagmi
             </a>
           </div>
-          <button
-            type="button"
-            className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded"
-            onClick={() => setShowWalletOptions(true)}
-          >
-            Connect
-          </button>
+          <Button onClick={() => setShowWalletOptions(true)}>Connect</Button>
         </div>
       </div>
+
       {children}
     </div>
   );

@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
 import { useConnect } from "wagmi";
+import { Button } from "..";
 
 interface Props {
   open: boolean;
@@ -21,19 +22,23 @@ export default function WalletOptionsModal(props: Props) {
             </div>
 
             {data.connectors.map((c) => (
-              <button
-                className="bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded w-80 mr-2 ml-2 mb-3"
-                disabled={!c.ready}
-                key={c.id}
-                onClick={() => connect(c)}
-              >
-                {c.name}
-                {!c.ready && " (unsupported)"}
-              </button>
+              <div key={c.id} className="ml-2 mr-2 mb-2">
+                <Button
+                  width={80}
+                  disabled={!c.ready}
+                  onClick={() => connect(c)}
+                >
+                  {`${c.name}${!c.ready ? " (unsupported)" : ""}`}
+                </Button>
+              </div>
             ))}
-            {error && <div>{error?.message ?? "Failed to connect"}</div>}
+            {error && (
+              <div className="text-red-500 ml-2">
+                {error?.message ?? "Failed to connect"}
+              </div>
+            )}
 
-            <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b mt-1">
+            <div className="flex items-center justify-end p-3 border-t border-solid border-blueGray-200 rounded-b mt-1">
               <button
                 className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                 type="button"
