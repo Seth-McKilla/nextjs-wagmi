@@ -1,5 +1,5 @@
-import { Dispatch, SetStateAction } from "react";
-import { useConnect } from "wagmi";
+import { useEffect, Dispatch, SetStateAction } from "react";
+import { useConnect, useAccount } from "wagmi";
 import { Button } from "..";
 
 interface Props {
@@ -10,7 +10,12 @@ interface Props {
 export default function WalletOptionsModal(props: Props) {
   const { open, setOpen } = props;
 
-  const [{ data, error }, connect] = useConnect();
+  const [{ data: connectData, error }, connect] = useConnect();
+  const [{ data: accountData }] = useAccount();
+
+  useEffect(() => {
+    accountData && setOpen(false);
+  }, [accountData, setOpen]);
 
   return open ? (
     <>
@@ -21,8 +26,8 @@ export default function WalletOptionsModal(props: Props) {
               <h3 className="text-2xl font-semibold">Choose a Wallet</h3>
             </div>
 
-            {data.connectors.map((c) => (
-              <div key={c.id} className="ml-2 mr-2 mb-2">
+            {connectData.connectors.map((c) => (
+              <div key={c.id} className="ml-2 mr-2 mb-2 w-80">
                 <Button
                   width={80}
                   disabled={!c.ready}
