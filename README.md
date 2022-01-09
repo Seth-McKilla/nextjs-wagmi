@@ -1,5 +1,6 @@
 # Welcome to the NextJS wagmi demo 👋
 This repo servers as a minimal template for integrating the wagmi React hooks for Ethereum library with Typescript & NextJS. Due to its ease of customizability and extensibility, this template has been styled with the Tailwind CSS framework. Let's get to it!
+### Check out the live demo 👉 [NextJS wagmi](https://nextjs-wagmi.vercel.app/)
 
 ## Get up and running in 3 simple steps:
 
