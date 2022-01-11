@@ -19,16 +19,16 @@ const Home: NextPage = () => {
       />
 
       <Layout>
-        <div className="grid place-items-center h-screen">
+        <div className="grid h-screen place-items-center">
           <div className="grid place-items-center">
-            <h1 className="text-4xl font-bold mb-8">
+            <h1 className="mb-8 text-4xl font-bold">
               {accountData
                 ? "Account Details"
                 : "Welcome to the NextJS wagmi template!"}
             </h1>
             {accountData && balanceData ? (
               <>
-                <h6 className="text-2xl mb-2">{`Wallet Address: ${accountData.address}`}</h6>
+                <h6 className="mb-2 text-2xl">{`Wallet Address: ${accountData.address}`}</h6>
                 <div className="inline-flex place-items-center">
                   <Image
                     src={
@@ -38,7 +38,7 @@ const Home: NextPage = () => {
                     width={40}
                     height={65}
                   />
-                  <h6 className="text-2xl ml-2">{`${Number(
+                  <h6 className="ml-2 text-2xl">{`${Number(
                     balanceData.formatted
                   ).toFixed(4)} Ether`}</h6>
                 </div>

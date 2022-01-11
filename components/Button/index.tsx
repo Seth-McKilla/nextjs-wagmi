@@ -10,7 +10,7 @@ export default function Button(props: Props) {
   return (
     <button
       type="button"
-      className={`h-14 bg-transparent hover:bg-blue-500 text-blue-700 font-semibold hover:text-white py-2 px-4 border border-blue-500 hover:border-transparent rounded ${
+      className={`h-14 p-3 font-semibold border border-black hover:border-transparent hover:text-white hover:bg-black rounded-md ${
         width && `w-${width}`
       }`}
       {...rest}

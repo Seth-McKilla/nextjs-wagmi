@@ -15,7 +15,7 @@ export default function Layout({ children }: { children: ReactNode }) {
       return (
         <>
           {accountData.ens.avatar && (
-            <div className="h-8 w-8 relative mr-2">
+            <div className="relative w-8 h-8 mr-2">
               <Image
                 src={accountData?.ens.avatar}
                 alt="ENS Avatar"
@@ -63,7 +63,7 @@ export default function Layout({ children }: { children: ReactNode }) {
         setOpen={setShowWalletOptions}
       />
 
-      <div className="bg-gradient-to-r from-blue-500 to-blue-100 absolute w-screen">
+      <div className="absolute w-screen bg-gradient-to-r from-black to-white">
         <div className="flex items-center justify-between p-4">
           <div className="flex items-center">
             <h4 className="text-2xl font-bold text-white cursor-default">
