@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { useEffect } from "react";
 import { useConnect, useAccount } from "wagmi";
 import { Button } from "..";
@@ -31,18 +32,31 @@ export default function WalletOptionsModal(props: Props) {
               </h3>
             </div>
 
-            {connectData.connectors.map((c) => (
-              <div key={c.id} className="mb-2 ml-2 mr-2 w-80">
-                <Button
-                  loading={connectDataLoading}
-                  width={80}
-                  disabled={!c.ready}
-                  onClick={() => connect(c)}
-                >
-                  {`${c.name}${!c.ready ? " (unsupported)" : ""}`}
-                </Button>
-              </div>
-            ))}
+            {connectData.connectors.map((c) => {
+              console.log(c.id);
+              return (
+                <div key={c.id} className="mb-2 ml-2 mr-2 w-80">
+                  <Button
+                    loading={connectDataLoading}
+                    width={80}
+                    disabled={!c.ready}
+                    onClick={() => connect(c)}
+                  >
+                    <>
+                      <div className="mr-3">
+                        <Image
+                          src={`/images/${c.id}.svg`}
+                          alt={c.name}
+                          height={32}
+                          width={32}
+                        />
+                      </div>
+                      {`${c.name}${!c.ready ? " (unsupported)" : ""}`}
+                    </>
+                  </Button>
+                </div>
+              );
+            })}
             {error && (
               <div className="ml-2 text-red-500">
                 {error?.message ?? "Failed to connect"}
