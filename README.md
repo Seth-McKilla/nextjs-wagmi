@@ -1,5 +1,5 @@
-# Welcome to the NextJS wagmi demo 👋
-This repo servers as a minimal template for integrating the wagmi React hooks for Ethereum library with Typescript & NextJS. Due to its ease of customizability and extensibility, this template has been styled with the Tailwind CSS framework. Let's get to it!
+# Welcome to the NextJS wagmi starter template 👋
+Looking to get up and running with a Typescript / NextJS dApp as quickly as possible? You're in the right place! This repo serves as a minimal template for integrating the wagmi React hooks for Ethereum library with Typescript & NextJS. Due to its ease of customizability and extensibility, this template has been styled with the Tailwind CSS framework. Let's get to it!
 ### Check out the live demo 👉 [NextJS wagmi](https://nextjs-wagmi.vercel.app/)
 
 ## Get up and running in 3 simple steps:
@@ -36,10 +36,7 @@ To learn more about the packages used in this project, take a look at the follow
 - [wagmi Documentation](https://wagmi-xyz.vercel.app/) - learn about the wagmi React hooks for Ethereum.
 - [Tailwind CSS Documentation](https://tailwindcss.com/) - learn about the Tailwind CSS styling framework.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
 ## Deploy on Vercel
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https%3A%2F%2Fgithub.com%2FSeth-McKilla%2Fnextjs-wagmi&env=NEXT_PUBLIC_INFURA_ID)
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
