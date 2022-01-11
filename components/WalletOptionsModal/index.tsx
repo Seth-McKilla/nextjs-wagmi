@@ -32,7 +32,7 @@ export default function WalletOptionsModal(props: Props) {
               </h3>
             </div>
 
-            {connectData.connectors.map((c) => {
+            {connectData.connectors.map((c) => (
               <div key={c.id} className="mb-2 ml-2 mr-2 w-80">
                 <Button
                   loading={connectDataLoading}
@@ -52,8 +52,8 @@ export default function WalletOptionsModal(props: Props) {
                     {`${c.name}${!c.ready ? " (unsupported)" : ""}`}
                   </>
                 </Button>
-              </div>;
-            })}
+              </div>
+            ))}
             {error && (
               <div className="ml-2 text-red-500">
                 {error?.message ?? "Failed to connect"}
