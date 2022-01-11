@@ -1,12 +1,19 @@
 import Head from "next/head";
 import Image from "next/image";
-import { ReactNode, useState } from "react";
+import { ReactNode } from "react";
 import { Button, MenuDropdown, WalletOptionsModal } from "..";
 import { useAccount } from "wagmi";
 
-export default function Layout({ children }: { children: ReactNode }) {
-  const [showWalletOptions, setShowWalletOptions] = useState(false);
-  const [{ data: accountData }, disconnect] = useAccount({
+interface Props {
+  children: ReactNode;
+  showWalletOptions: boolean;
+  setShowWalletOptions: (showWalletOptions: boolean) => void;
+}
+
+export default function Layout(props: Props) {
+  const { children, showWalletOptions, setShowWalletOptions } = props;
+
+  const [{ data: accountData, loading }, disconnect] = useAccount({
     fetchEns: true,
   });
 
@@ -14,8 +21,8 @@ export default function Layout({ children }: { children: ReactNode }) {
     if (accountData?.ens) {
       return (
         <>
-          {accountData.ens.avatar && (
-            <div className="relative w-8 h-8 mr-2">
+          <div className="relative w-8 h-8 mr-2">
+            {accountData.ens.avatar ? (
               <Image
                 src={accountData?.ens.avatar}
                 alt="ENS Avatar"
@@ -23,8 +30,16 @@ export default function Layout({ children }: { children: ReactNode }) {
                 objectFit="cover"
                 className="rounded-full"
               />
-            </div>
-          )}
+            ) : (
+              <Image
+                src="/images/black-gradient.png"
+                alt="ENS Avatar"
+                layout="fill"
+                objectFit="cover"
+                className="rounded-full"
+              />
+            )}
+          </div>
           <span className="truncate max-w-[100px]">
             {accountData.ens?.name}
           </span>
@@ -47,7 +62,14 @@ export default function Layout({ children }: { children: ReactNode }) {
       );
     }
 
-    return <Button onClick={() => setShowWalletOptions(true)}>Connect</Button>;
+    return (
+      <Button
+        loading={loading || showWalletOptions}
+        onClick={() => setShowWalletOptions(true)}
+      >
+        Connect
+      </Button>
+    );
   };
 
   return (

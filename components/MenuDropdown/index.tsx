@@ -1,6 +1,6 @@
 import { Fragment, ReactElement } from "react";
 import { Menu, Transition } from "@headlessui/react";
-import { ChevronDownIcon } from "@heroicons/react/solid";
+import { AiFillCaretDown } from "react-icons/ai";
 
 interface Props {
   label: ReactElement | string | undefined;
@@ -17,7 +17,7 @@ export default function Example(props: Props) {
     <Menu as="div" className="relative inline-block text-left">
       <Menu.Button className="inline-flex justify-between p-3 font-semibold border border-black rounded-md h-14 w-52 place-items-center">
         {label}
-        <ChevronDownIcon className="w-5 h-5 ml-2 -mr-1" aria-hidden="true" />
+        <AiFillCaretDown className="w-5 h-5 ml-2 -mr-1" aria-hidden="true" />
       </Menu.Button>
       <Transition
         as={Fragment}

@@ -1,15 +1,47 @@
-import Image from "next/image";
 import { useState } from "react";
 import type { NextPage } from "next";
 import { useAccount, useBalance } from "wagmi";
-import { Button, Layout, WalletOptionsModal } from "../components";
+import { Button, Layout, Loader, WalletOptionsModal } from "../components";
 
 const Home: NextPage = () => {
   const [showWalletOptions, setShowWalletOptions] = useState(false);
-  const [{ data: accountData }] = useAccount();
-  const [{ data: balanceData }] = useBalance({
+  const [{ data: accountData, loading: accountLoading }] = useAccount();
+  const [{ data: balanceData, loading: balanceLoading }] = useBalance({
     addressOrName: accountData?.address,
+    watch: true,
   });
+
+  const loading = (accountLoading || balanceLoading) && !balanceData;
+
+  const renderContent = () => {
+    if (loading) return <Loader size={8} />;
+    if (balanceData) {
+      return (
+        <>
+          <h1 className="mb-8 text-4xl font-bold">My Wallet</h1>
+          <div className="inline-flex place-items-center">
+            <h6 className="ml-2 text-2xl">{`Ξ ${Number(
+              balanceData?.formatted
+            ).toFixed(4)} ${balanceData?.symbol}`}</h6>
+          </div>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <h1 className="mb-8 text-4xl font-bold">
+          Welcome to the NextJS wagmi template!
+        </h1>
+        <Button
+          loading={accountLoading}
+          onClick={() => setShowWalletOptions(true)}
+        >
+          Connect to Wallet
+        </Button>
+      </>
+    );
+  };
 
   return (
     <>
@@ -18,37 +50,12 @@ const Home: NextPage = () => {
         setOpen={setShowWalletOptions}
       />
 
-      <Layout>
+      <Layout
+        showWalletOptions={showWalletOptions}
+        setShowWalletOptions={setShowWalletOptions}
+      >
         <div className="grid h-screen place-items-center">
-          <div className="grid place-items-center">
-            <h1 className="mb-8 text-4xl font-bold">
-              {accountData
-                ? "Account Details"
-                : "Welcome to the NextJS wagmi template!"}
-            </h1>
-            {accountData && balanceData ? (
-              <>
-                <h6 className="mb-2 text-2xl">{`Wallet Address: ${accountData.address}`}</h6>
-                <div className="inline-flex place-items-center">
-                  <Image
-                    src={
-                      "https://ethereum.org/static/6b935ac0e6194247347855dc3d328e83/cdbe4/eth-diamond-black.webp"
-                    }
-                    alt="ETH Diamond"
-                    width={40}
-                    height={65}
-                  />
-                  <h6 className="ml-2 text-2xl">{`${Number(
-                    balanceData.formatted
-                  ).toFixed(4)} Ether`}</h6>
-                </div>
-              </>
-            ) : (
-              <Button onClick={() => setShowWalletOptions(true)}>
-                Connect to Wallet
-              </Button>
-            )}
-          </div>
+          <div className="grid place-items-center">{renderContent()}</div>
         </div>
       </Layout>
     </>
