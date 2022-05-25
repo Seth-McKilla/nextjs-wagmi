@@ -76,7 +76,7 @@ contract BetMain {
     }
 
     function checkAndAllotFunds(uint256 betAmount) private {
-        uint256 existingBalance = betWinnerAmountClaimable[msg.sender] || 0;
+        uint256 existingBalance = betWinnerAmountClaimable[msg.sender];
         uint256 existingBalancePlusBetAmount = existingBalance + msg.value;
 
         require(
@@ -203,8 +203,8 @@ contract BetMain {
         MatchStruct memory newMatchStruct = matchIdToMatchStruct[_matchId];
 
         require(
-            keccak256(abi.encodePacked(winningTeam)) == newMatchStruct.teamOne ||
-            keccak256(abi.encodePacked(winningTeam)) == newMatchStruct.teamTwo,
+            keccak256(abi.encodePacked(winningTeam)) == keccak256(abi.encodePacked(newMatchStruct.teamOne)) ||
+            keccak256(abi.encodePacked(winningTeam)) == keccak256(abi.encodePacked(newMatchStruct.teamTwo)),
             "Invalid Team Name Entered"
         );
 
@@ -278,11 +278,11 @@ contract BetMain {
 
     function withdrawFunds() external onlyOwner {
         // loop over all the betWinnerAmountClaimable and transfer the amount to the owner
-        for (uint256 i = 0; i < betWinnerAmountClaimable.length; i++) {
-            if (betWinnerAmountClaimable[i] != 0) {
-                payable(i).transfer(betWinnerAmountClaimable[i]);
-            }
-        }
-        payable(msg.sender).transfer(this.balance);
+        // for (uint256 i = 0; i < betWinnerAmountClaimable.length; i++) {
+        //     if (betWinnerAmountClaimable[i] != 0) {
+        //         payable(i).transfer(betWinnerAmountClaimable[i]);
+        //     }
+        // }
+        payable(msg.sender).transfer(address(this).balance);
     }
 }
