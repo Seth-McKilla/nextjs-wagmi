@@ -8,8 +8,8 @@ contract BetMain {
     Counters.Counter public _betIDs;
     Counters.Counter public match_id;
     uint256 baseBetValue = 10 ether;
+    bool betOn = false;
 
-    //mapping (address => uint) payabletoContract;
     address ownerOne = 0x65eb6D9b9Ff3F9999aF0cE71c6331A16Fc19f4b1;
 
     mapping(uint256 => MatchStruct) matches;
@@ -62,6 +62,7 @@ contract BetMain {
     mapping(address => uint256) betWinnerAmountClaimable;
 
     modifier onlyOwner() {
+        require(betOn == true, "Contract has been turned off by admin");
         require(ownerOne == msg.sender, "Only Owners modifier");
         _;
     }
