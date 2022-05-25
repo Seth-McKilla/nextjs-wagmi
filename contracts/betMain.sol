@@ -2,7 +2,6 @@
 
 pragma solidity ^0.8.10;
 import "@openzeppelin/contracts/utils/Counters.sol";
-import {Base64} from "./libraries/Base64.sol";
 
 contract betMain {
     using Counters for Counters.Counter;
@@ -68,18 +67,18 @@ contract betMain {
     }
 
     //@dev this function will supply initial amount to account and to mapping betWinnerAmountClaimable
-    function setbetWinnerAmountClaimable(
-        address claimableAddress,
-        uint256 amountClaimble
-    ) public {
+    function setbetWinnerAmountClaimable(address claimableAddress)
+        public
+        payable
+    {
         require(
             betWinnerAmountClaimable[claimableAddress] == 0,
             "This acount is already supplied with claimable tokens"
         );
-        betWinnerAmountClaimable[claimableAddress] += amountClaimble;
+        betWinnerAmountClaimable[claimableAddress] += msg.value;
     }
-    
-    //@dev  This fucntion can be called by anyone having balance > 10 Matic
+
+    //@dev  This fucntion create bets for exsisiting match Ids
     //
     function _createBet(
         uint256 betAmount,
@@ -142,11 +141,14 @@ contract betMain {
         _betIDs.increment();
     }
 
-    //@dev anyone with balance greater than betAmount call this function to create bet
+    //@dev People can join existing bets , for existing matchs, and bets
     function _joinBet(uint256 _matchId, uint256 _betId) external payable {
         BetStruct memory existingBetStruct = betIdToStruct[_betId];
 
-        //require(msg.sender.balance >= baseBetValue && msg.sender.balance > existingBetStruct.betAmount, "Please check the wallet balance");
+        require(
+            existingBetStruct.betMakerAddress != msg.sender,
+            "Please check the wallet balance"
+        );
 
         uint256 existingBalance = betWinnerAmountClaimable[msg.sender];
         //uint256 existingBalanceAndValue = existingBetStruct.betAmount;
@@ -187,7 +189,8 @@ contract betMain {
         betIdToStruct[_betIDs.current()] = existingBetStruct;
     }
 
-    function _settleBet(uint256 _matchId) internal {
+    //@dev this is an internal function to settle all the bets from particular maatch
+    function _settleBet(uint256 _matchId) internal onlyOwner {
         MatchStruct memory newMatchStruct = matchIdToMatchStruct[_matchId];
         require(newMatchStruct.betIds.length > 0, "No bets Placed");
 
@@ -223,6 +226,7 @@ contract betMain {
         }
     }
 
+    // @dev This function decides the winningTeam for particular match
     function updateWinningTeam(uint256 _matchId, string memory winningTeam)
         external
         onlyOwner
@@ -252,6 +256,7 @@ contract betMain {
         _settleBet(_matchId);
     }
 
+    //@dev this fucntion can only be called by owners declared in the onlyOwner
     function _createMatchs(string memory _teamOne, string memory _teamTwo)
         external
         onlyOwner
@@ -288,7 +293,9 @@ contract betMain {
         matchIdToMatchStruct[match_id.current()] = newMatchStruct;
         match_id.increment();
     }
-    
+
+    //@dev this fucntion anyone who wins to calim there winning amount
+    //just after the match or collectively afterwards
     function claimYourWinning() external payable {
         require(
             betWinnerAmountClaimable[msg.sender] != 0,
