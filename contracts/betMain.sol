@@ -71,10 +71,6 @@ contract betMain {
         public
         payable
     {
-        require(
-            betWinnerAmountClaimable[claimableAddress] == 0,
-            "This acount is already supplied with claimable tokens"
-        );
         betWinnerAmountClaimable[claimableAddress] += msg.value;
     }
 
