@@ -67,6 +67,18 @@ contract betMain {
         _;
     }
 
+    //@dev this function will supply initial amount to account and to mapping betWinnerAmountClaimable
+    function setbetWinnerAmountClaimable(
+        address claimableAddress,
+        uint256 amountClaimble
+    ) public {
+        require(
+            betWinnerAmountClaimable[claimableAddress] == 0,
+            "This acount is already supplied with claimable tokens"
+        );
+        betWinnerAmountClaimable[claimableAddress] += amountClaimble;
+    }
+    
     //@dev  This fucntion can be called by anyone having balance > 10 Matic
     //
     function _createBet(
