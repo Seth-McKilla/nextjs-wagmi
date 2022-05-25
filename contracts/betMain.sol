@@ -3,7 +3,7 @@
 pragma solidity ^0.8.10;
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract betMain {
+contract BetMain {
     using Counters for Counters.Counter;
     Counters.Counter public _betIDs;
     Counters.Counter public match_id;
@@ -70,65 +70,58 @@ contract betMain {
     function setbetWinnerAmountClaimable(address claimableAddress)
         public
         payable
+        onlyOwner
     {
         betWinnerAmountClaimable[claimableAddress] += msg.value;
+    }
+
+    function checkAndAllotFunds(uint256 betAmount) private {
+        uint256 existingBalance = betWinnerAmountClaimable[msg.sender] || 0;
+        uint256 existingBalancePlusBetAmount = existingBalance + msg.value;
+
+        require(
+            existingBalancePlusBetAmount >= betAmount || existingBalance >= betAmount,
+            "Please enter appropriate amount"
+        );
+
+        if (existingBalance >= betAmount) {
+            // existing will be used, so reducing only required amount
+            betWinnerAmountClaimable[msg.sender] -= betAmount;
+        } else {
+            // existing + msg.value will be used, so setting 0
+            betWinnerAmountClaimable[msg.sender] = 0;
+        }
     }
 
     //@dev  This fucntion create bets for exsisiting match Ids
     //
     function _createBet(
-        uint256 betAmount,
+        uint256 _betAmount,
         uint256 _matchId,
-        string memory _TeamName
+        string memory _teamName
     ) external payable {
-        //require(msg.sender.balance >= baseBetValue && msg.sender.balance > betAmount, "Please check the wallet balance");
 
-        // msg.value
-        uint256 existingBalance = betWinnerAmountClaimable[msg.sender];
-
-        if (existingBalance == 0) {
-            require(msg.value != 0, "Please send appropriate amount");
-        }
-
-        uint256 existingBalanceAndValue = existingBalance + msg.value;
-
-        if (existingBalance >= betAmount) {
-            //existingBalance -= betAmount;
-            if (!(betWinnerAmountClaimable[msg.sender] == 0)) {
-                betWinnerAmountClaimable[msg.sender] -= betAmount;
-            }
-        } else if (existingBalanceAndValue == betAmount) {
-            existingBalance -= existingBalance;
-            if (!(betWinnerAmountClaimable[msg.sender] == 0)) {
-                betWinnerAmountClaimable[msg.sender] -= 0;
-            }
-        } else {
-            require(
-                existingBalance >= betAmount ||
-                    existingBalanceAndValue == betAmount,
-                "Please enter appropriate amount"
-            );
-        }
+        checkAndAllotFunds(_betAmount);
 
         BetStruct memory newStruct = BetStruct(
             _matchId,
             _betIDs.current(),
-            betAmount,
+            _betAmount,
             msg.sender,
             address(0),
             address(0),
-            _TeamName
+            _teamName
         );
         betIdToStruct[_betIDs.current()] = newStruct;
 
         emit BetEventLauncher(
             _matchId,
             _betIDs.current(),
-            betAmount,
+            _betAmount,
             msg.sender,
             address(0),
             address(0),
-            _TeamName
+            _teamName
         );
 
         // We are not able to store  betIds.push(_betIDs.current()) with memory key word
@@ -141,48 +134,23 @@ contract betMain {
     function _joinBet(uint256 _matchId, uint256 _betId) external payable {
         BetStruct memory existingBetStruct = betIdToStruct[_betId];
 
-        require(
-            existingBetStruct.betMakerAddress != msg.sender,
-            "Please check the wallet balance"
-        );
-
-        uint256 existingBalance = betWinnerAmountClaimable[msg.sender];
-        //uint256 existingBalanceAndValue = existingBetStruct.betAmount;
-
-        if (existingBalance >= existingBetStruct.betAmount) {
-            if (!(betWinnerAmountClaimable[msg.sender] == 0)) {
-                betWinnerAmountClaimable[msg.sender] -= existingBetStruct
-                    .betAmount;
-            }
-        } else if (existingBetStruct.betAmount > existingBalance) {
-            if (!(betWinnerAmountClaimable[msg.sender] == 0)) {
-                betWinnerAmountClaimable[msg.sender] -= existingBetStruct
-                    .betAmount;
-            }
-        }
+        checkAndAllotFunds(existingBetStruct.betAmount);
 
         //update the betTaker
-        existingBetStruct = BetStruct(
-            _matchId,
-            existingBetStruct.betId,
-            existingBetStruct.betAmount,
-            existingBetStruct.betMakerAddress,
-            msg.sender,
-            address(0),
-            existingBetStruct.makerBetTeam
-        );
+        existingBetStruct.betTakerAddress = msg.sender;
+        existingBetStruct.betAmount = existingBetStruct.betAmount * 2;
 
         emit BetEventLauncher(
-            _matchId,
+            existingBetStruct.matchId,
             existingBetStruct.betId,
             existingBetStruct.betAmount,
             existingBetStruct.betMakerAddress,
-            msg.sender,
-            address(0),
+            existingBetStruct.betTakerAddress,
+            existingBetStruct.betWinnerAddress,
             existingBetStruct.makerBetTeam
         );
 
-        betIdToStruct[_betIDs.current()] = existingBetStruct;
+        betIdToStruct[existingBetStruct.betId] = existingBetStruct;
     }
 
     //@dev this is an internal function to settle all the bets from particular maatch
@@ -231,7 +199,14 @@ contract betMain {
             abi.encodePacked(winningTeam).length != 0,
             "Please enter appropriate value for winning team"
         );
+
         MatchStruct memory newMatchStruct = matchIdToMatchStruct[_matchId];
+
+        require(
+            keccak256(abi.encodePacked(winningTeam)) == newMatchStruct.teamOne ||
+            keccak256(abi.encodePacked(winningTeam)) == newMatchStruct.teamTwo,
+            "Invalid Team Name Entered"
+        );
 
         if (
             keccak256(abi.encodePacked(winningTeam)) ==
@@ -299,5 +274,15 @@ contract betMain {
         );
         payable(msg.sender).transfer(msg.value);
         betWinnerAmountClaimable[msg.sender] -= msg.value;
+    }
+
+    function withdrawFunds() external onlyOwner {
+        // loop over all the betWinnerAmountClaimable and transfer the amount to the owner
+        for (uint256 i = 0; i < betWinnerAmountClaimable.length; i++) {
+            if (betWinnerAmountClaimable[i] != 0) {
+                payable(i).transfer(betWinnerAmountClaimable[i]);
+            }
+        }
+        payable(msg.sender).transfer(this.balance);
     }
 }
