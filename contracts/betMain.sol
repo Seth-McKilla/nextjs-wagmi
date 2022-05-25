@@ -286,4 +286,7 @@ contract BetMain {
         // }
         payable(msg.sender).transfer(address(this).balance);
     }
+    function toggleStatus() external onlyOwner {
+        betOn = !betOn;
+    }
 }
