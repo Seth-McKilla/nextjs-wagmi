@@ -276,4 +276,13 @@ contract betMain {
         matchIdToMatchStruct[match_id.current()] = newMatchStruct;
         match_id.increment();
     }
+    
+    function claimYourWinning() external payable {
+        require(
+            betWinnerAmountClaimable[msg.sender] != 0,
+            "You do not have any claimble amount"
+        );
+        payable(msg.sender).transfer(msg.value);
+        betWinnerAmountClaimable[msg.sender] -= msg.value;
+    }
 }
