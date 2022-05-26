@@ -240,8 +240,8 @@ contract BetMain {
         );
 
         require(
-            abi.encodePacked(_teamOne).length !=
-                abi.encodePacked(_teamTwo).length,
+            keccak256(abi.encodePacked(_teamOne)) !=
+                keccak256(abi.encodePacked(_teamTwo)),
             "Please check the teams, how can a team play against itself"
         );
 
