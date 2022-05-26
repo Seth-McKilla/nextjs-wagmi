@@ -1,0 +1,16 @@
+{
+  "name": "subgraph",
+  "license": "UNLICENSED",
+  "scripts": {
+    "codegen": "graph codegen",
+    "build": "graph build",
+    "deploy": "graph deploy --node https://api.thegraph.com/deploy/ github-Dheeraj/subgraph",
+    "create-local": "graph create --node http://localhost:8020/ github-Dheeraj/subgraph",
+    "remove-local": "graph remove --node http://localhost:8020/ github-Dheeraj/subgraph",
+    "deploy-local": "graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 github-Dheeraj/subgraph"
+  },
+  "dependencies": {
+    "@graphprotocol/graph-cli": "0.30.1",
+    "@graphprotocol/graph-ts": "0.27.0"
+  }
+}
