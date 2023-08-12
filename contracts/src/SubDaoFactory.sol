@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.10;
 
 import "src/interfaces/IHats.sol";
 import "../lib/openzeppelin-contracts/contracts/access/AccessControl.sol";

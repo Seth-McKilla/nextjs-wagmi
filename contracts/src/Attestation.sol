@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.10;
 
 // Attestation contract for handling bounty attestations and subDAO creation attestations.
 contract AttestationContract {
