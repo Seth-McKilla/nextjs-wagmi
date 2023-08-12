@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.10;
 
-contract DAOProposalFactory {
+contract DAOProposal {
     
     enum ProposalType { AddMember } // Added an enum for proposal types
 
@@ -32,6 +32,7 @@ contract DAOProposalFactory {
         _;
     }
 
+    //@dev Voting duration is in seconds
     constructor(uint256 _quorum, uint256 _votingDuration) {
         require(_quorum > 0 && _quorum <= 100, "Quorum must be between 1 and 100");
         quorum = _quorum;
@@ -42,6 +43,13 @@ contract DAOProposalFactory {
         if (!members[_member]) {
             members[_member] = true;
             memberCount++;
+        }
+    }
+
+    //Batch add members
+    function addMembers(address[] memory _members) public onlyMember {
+        for (uint256 i = 0; i < _members.length; i++) {
+            addMember(_members[i]);
         }
     }
 
