@@ -7,6 +7,9 @@ contract DAOFactory is AccessControl {
     bytes32 public constant PRESIDENT_ROLE = keccak256("PRESIDENT_ROLE");
     bytes32 public constant VICE_PRESIDENT_ROLE = keccak256("VICE_PRESIDENT_ROLE");
     bytes32 public constant SECRETARY_ROLE = keccak256("SECRETARY_ROLE");
+    bytes32 public constant TREASURER_ROLE = keccak256("TREASURER_ROLE");
+    bytes32 public constant MEMBER_ROLE = keccak256("MEMBER_ROLE");
+    
 
     IHats public hatsProtocol;
 
