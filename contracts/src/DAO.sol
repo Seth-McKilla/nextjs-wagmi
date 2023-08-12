@@ -3,19 +3,22 @@ pragma solidity ^0.8.10;
 import "src/interfaces/IHats.sol";
 import "../lib/openzeppelin-contracts/contracts/access/AccessControl.sol";
 
-contract DAOFactory is AccessControl {
+contract DAO is AccessControl {
     bytes32 public constant PRESIDENT_ROLE = keccak256("PRESIDENT_ROLE");
     bytes32 public constant VICE_PRESIDENT_ROLE = keccak256("VICE_PRESIDENT_ROLE");
     bytes32 public constant SECRETARY_ROLE = keccak256("SECRETARY_ROLE");
-    bytes32 public constant TREASURER_ROLE = keccak256("TREASURER_ROLE");
-    bytes32 public constant MEMBER_ROLE = keccak256("MEMBER_ROLE");
-    
 
+    //track the deployed contract address of DAOProposal contract and DAOMembershipNFT contract
+    address public daoProposalAddress;
+    address public daoMembershipNFTAddress;
+    
     IHats public hatsProtocol;
 
-    constructor(address _hatsProtocolAddress) {
-        _setupRole(PRESIDENT_ROLE, msg.sender); // Assigning the deployer as the initial president for example purposes
+    constructor(address _hatsProtocolAddress, address _daoProposalAddress, address _daoMembershipNFTAddress) {
+        _setupRole(PRESIDENT_ROLE, msg.sender); // Assigning the deployer as the 3initial president for example purposes
         hatsProtocol = IHats(_hatsProtocolAddress);
+        daoProposalAddress = _daoProposalAddress;
+        daoMembershipNFTAddress = _daoMembershipNFTAddress;
     }
 
     // President Functions
@@ -37,6 +40,16 @@ contract DAOFactory is AccessControl {
 
     function requestLinkTopHatToTreeAsPresident(uint32 _topHatId, uint256 _newAdminHat) external onlyRole(PRESIDENT_ROLE) {
         hatsProtocol.requestLinkTopHatToTree(_topHatId, _newAdminHat);
+    }
+
+    //allow change of DAOProposal contract address
+    function changeDAOProposalAddress(address _newDAOProposalAddress) external onlyRole(PRESIDENT_ROLE) {
+        daoProposalAddress = _newDAOProposalAddress;
+    }
+
+    //allow change of DAOMembershipNFT contract address
+    function changeDAOMembershipNFTAddress(address _newDAOMembershipNFTAddress) external onlyRole(PRESIDENT_ROLE) {
+        daoMembershipNFTAddress = _newDAOMembershipNFTAddress;
     }
 
 }
