@@ -1,19 +1,19 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.19;
 
 
 import "forge-std/Test.sol";
-import "../src/DaoProposalFactory.sol"; // Replace with the actual path
+import "../src/DAOProposal.sol"; // Replace with the actual path
 
-contract DAOProposalFactoryTest {
+contract DAOProposalTest {
 
-    DAOProposalFactory dao;
+    DAOProposal dao;
     address owner;
     address member1 = address(0x123); // Replace with actual address
     address member2 = address(0x456); // Replace with actual address
 
-    function setup() public {
-        dao = new DAOProposalFactory(50, 1 days); // 50% quorum, 1 day voting duration
+    function setUp() public {
+        dao = new DAOProposal(50, 1 days); // 50% quorum, 1 day voting duration
         owner = msg.sender;
         dao.addMember(owner);
     }
@@ -24,7 +24,7 @@ contract DAOProposalFactoryTest {
     }
 
     function testCreateProposal() public {
-        uint256 proposalId = dao.createProposal("Test Proposal", "This is a test proposal", DAOProposalFactory.ProposalType.AddMember, member2);
+        uint256 proposalId = dao.createProposal("Test Proposal", "This is a test proposal", DAOProposal.ProposalType.AddMember, member2);
         
         // Destructuring the tuple returned by the proposals function
         (string memory title, , , , , , , ,) = dao.proposals(proposalId);
@@ -33,7 +33,7 @@ contract DAOProposalFactoryTest {
     }
 
     function testVote() public {
-        uint256 proposalId = dao.createProposal("Test Proposal", "This is a test proposal", DAOProposalFactory.ProposalType.AddMember, member2);
+        uint256 proposalId = dao.createProposal("Test Proposal", "This is a test proposal", DAOProposal.ProposalType.AddMember, member2);
         dao.addMember(member1);
         dao.vote(proposalId, true);
         
@@ -44,7 +44,7 @@ contract DAOProposalFactoryTest {
     }
 
     function testExecuteProposal() public {
-        uint256 proposalId = dao.createProposal("Test Proposal", "This is a test proposal", DAOProposalFactory.ProposalType.AddMember, member2);
+        uint256 proposalId = dao.createProposal("Test Proposal", "This is a test proposal", DAOProposal.ProposalType.AddMember, member2);
         dao.addMember(member1);
         dao.vote(proposalId, true);
         // Assuming some time manipulation here to simulate the end of the voting period
