@@ -1,14 +1,14 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.10;
+pragma solidity ^0.8.19;
 
 contract DAOProposal {
     
-    enum ProposalType { AddMember } // Added an enum for proposal types
+    enum ProposalType { AddMember, AddSubDAO } // Added an enum for proposal types
 
     struct Proposal {
-        string title;
-        string description;
-        address proposer;
+        string title; //name of proposal
+        string description; //description of proposal
+        address proposer; //msg.sender
         ProposalType proposalType; // Added a proposal type
         address targetAddress; // Address related to the proposal (e.g., new member address)
         uint256 forVotes;
@@ -18,25 +18,55 @@ contract DAOProposal {
         mapping(address => bool) voters;
     }
 
+    struct SubDAO {
+        string name;
+        string description;
+        string subDAOtype;
+        mapping(address => bool) members;
+        mapping(address => string) roles;
+        uint256 memberCount;
+    }
+
     Proposal[] public proposals;
     mapping(address => bool) public members;
     uint256 public memberCount = 0;
     uint256 public quorum;
     uint256 public votingDuration;
 
+    mapping(address => SubDAO) public subDAOs;
+    address[] public subDAOAddresses;
+
     event ProposalCreated(uint256 proposalId, string title, address proposer);
     event Voted(uint256 proposalId, address voter, bool vote);
+    event SubDAOCreated(address indexed subDAOAddress, string name);
+
 
     modifier onlyMember() {
         require(members[msg.sender], "Only members can perform this action");
         _;
     }
 
+
     //@dev Voting duration is in seconds
     constructor(uint256 _quorum, uint256 _votingDuration) {
         require(_quorum > 0 && _quorum <= 100, "Quorum must be between 1 and 100");
         quorum = _quorum;
         votingDuration = _votingDuration;
+    }
+
+    function createSubDAO(string memory _name, uint256 _proposalId) public returns (address) {
+        require(bytes(_name).length > 0, "SubDAO name is required");
+        //require that the proposal to create a subDAO is passed
+        require(proposals[_proposalId].proposalType == ProposalType.AddSubDAO, "Proposal must be to create a subDAO");
+        require(proposals[_proposalId].forVotes > quorum, "Proposal must have enough votes to pass");
+
+        SubDAO storage newSubDAO = subDAOs[msg.sender];
+        newSubDAO.name = _name;
+
+        subDAOAddresses.push(msg.sender);
+
+        emit SubDAOCreated(msg.sender, _name);
+        return msg.sender;
     }
 
     function addMember(address _member) public onlyMember {
@@ -100,6 +130,10 @@ contract DAOProposal {
         }
 
         proposal.executed = true;
+    }
+
+    function listAllSubDAOs() public view returns (address[] memory) {
+        return subDAOAddresses;
     }
 
     
