@@ -2,5 +2,26 @@
 src = "src"
 out = "out"
 libs = ["lib"]
+solc = "0.8.19"
+
+[profile.default.ir]
+enabled = true
+
 
 # See more config options https://github.com/foundry-rs/foundry/tree/master/config
+
+[rpc_endpoints]
+goerli = "https://eth-goerli.api.onfinality.io/public"
+local = "http://localhost:8545"
+optimismGoerli = "https://goerli.optimism.io"
+sepolia = "${SEPOLIA_RPC}"
+base = "https://base-goerli.blockpi.network/v1/rpc/public"
+zora = "https://testnet.rpc.zora.energy/"
+mode = "https://sepolia.mode.network/"
+tenderly = "https://rpc.vnet.tenderly.co/devnet/optimism-testnet/57f00c96-bce0-4f02-8c10-3040f6b59ef9"
+
+[etherscan]
+goerli = {key = "984MRHPMWD69PNI8U8R6E2T9YK5M81YCF1", url = "https://api-goerli.etherscan.io/api"}
+optimismGoerli = {key = "92A16HUUEHJBSDN6B8DP6QGGYT2GXEIV5W", url = "https://api-optimistic.etherscan.io/api"}
+sepolia = {key = "${ETHERSCAN_KEY}", url = "https://api-sepolia.etherscan.io/api"}
+base = {key = "JN2TPRTMA4SR23GSS7T6YYRSWNNR9KW1YK", url = "https://api.basescan.org/api"}
