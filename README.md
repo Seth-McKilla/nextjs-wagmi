@@ -14,13 +14,13 @@ npx create-next-app@latest -e https://github.com/Seth-McKilla/nextjs-wagmi
 
 > Note: The above command automatically downloads and installs the dependencies so no "npm install" or "yarn add" required!
 
-### 2. Create a .env.local file within the root directory with the following environment variables
+### 2. Rename the `.env.local.example` file to `.env.local` and add your Infura API Key
 
 ```yaml
-NEXT_PUBLIC_INFURA_ID=<insert infura id>
+NEXT_PUBLIC_INFURA_API_KEY=<insert infura api key>
 ```
 
-> Note: Grab an Infura ID (now `API Key`) from the [Infura website](https://infura.io/)
+> Note: Grab an Infura API Key from the [Infura website](https://infura.io/)
 
 ### 3. Start the local development environment
 
